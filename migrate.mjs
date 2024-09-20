@@ -1,25 +1,24 @@
 /* eslint-disable no-console */
-import path from 'path'
-import payload from 'payload'
-import { fileURLToPath } from 'url'
+import { migrate } from '@payloadcms/db-postgres'
+import pg from 'pg'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-async function migrate() {
-  const configPath = path.resolve(__dirname, './src/payload/payload.config.ts')
-
-  await payload.init({
-    secret: process.env.PAYLOAD_SECRET,
-    local: true,
-    configPath,
+async function runMigrations() {
+  const client = new pg.Client({
+    connectionString: process.env.DATABASE_URI,
   })
 
-  await payload.db.migrate()
-  console.log('Migration completed successfully')
-  process.exit(0)
+  try {
+    await client.connect()
+    console.log('Connected to database')
+
+    await migrate(client)
+    console.log('Migrations completed successfully')
+  } catch (error) {
+    console.error('Migration failed:', error)
+    process.exit(1)
+  } finally {
+    await client.end()
+  }
 }
 
-migrate().catch(error => {
-  console.error('Migration failed:', error)
-  process.exit(1)
-})
+runMigrations()
