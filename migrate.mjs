@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function migrate() {
-  const configPath = path.resolve(__dirname, 'src/payload/payload.config.ts')
+  const configPath = path.resolve(__dirname, './src/payload/payload.config.ts')
 
   await payload.init({
     secret: process.env.PAYLOAD_SECRET,
