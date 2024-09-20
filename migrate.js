@@ -16,7 +16,7 @@ async function runMigrations() {
       secret: process.env.PAYLOAD_SECRET,
       local: true,
       // Make sure this path is correct
-      configPath: require.resolve('./src/payload.config.ts'),
+      configPath: require.resolve('./src/payload/payload.config.ts'),
     })
 
     // Run migrations
