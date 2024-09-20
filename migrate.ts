@@ -2,28 +2,25 @@
 import payload from 'payload'
 import type { InitOptions } from 'payload/config'
 
-import payloadConfig from './src/payload/payload.config'
-
-const migrate = async (): Promise<void> => {
-  // Load the config file directly
+async function migrate(): Promise<void> {
+  // Import the config file directly
+  const { default: payloadConfig } = await import('./src/payload/payload.config')
 
   const initOptions: InitOptions = {
     secret: process.env.PAYLOAD_SECRET || '',
-    local: true,
-    // Use the imported config instead of specifying configPath
+    local: true, // This ensures Payload runs in local mode
+    // Spread the imported config to include all necessary options
     ...payloadConfig,
   }
 
-  // Initialize Payload
   await payload.init(initOptions)
 
-  // Run migrations
   await payload.db.migrate()
-  console.log('Migration successful')
+  console.log('Migration completed successfully')
   process.exit(0)
 }
 
-migrate().catch((err: Error) => {
-  console.error('Migration failed', err)
+migrate().catch((error: Error) => {
+  console.error('Migration failed:', error)
   process.exit(1)
 })
