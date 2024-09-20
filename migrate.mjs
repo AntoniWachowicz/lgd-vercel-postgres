@@ -2,7 +2,7 @@
 import { migrate } from '@payloadcms/db-postgres'
 import pg from 'pg'
 
-async function runMigrations() {
+async function migrate() {
   const client = new pg.Client({
     connectionString: process.env.DATABASE_URI,
   })
@@ -21,4 +21,4 @@ async function runMigrations() {
   }
 }
 
-runMigrations()
+migrate()
